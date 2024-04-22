@@ -79,18 +79,21 @@ declare global {
 }
 
 export const IS_WKWEBVIEW = Boolean(window.webkit && window.webkit.messageHandlers);
+const IS_BIGTINCAN_HUB = Boolean(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.dismissBrowser);
 
 // If running in iOS Safari proper, and not within a WKWebView component instance, check for ARQL feature support.
 // Otherwise, if running in a WKWebView instance, check for known ARQL compatible iOS browsers, including:
 // Chrome (CriOS), Edge (EdgiOS), Firefox (FxiOS), Google App (GSA), DuckDuckGo (DuckDuckGo).
 // All other iOS browsers / apps will fail by default.
 export const IS_AR_QUICKLOOK_CANDIDATE = (() => {
-    if(IS_IOS){
-        if(!IS_WKWEBVIEW){            
+    if(IS_IOS) {
+        if (IS_BIGTINCAN_HUB) {
+            return true;
+        } else if (!IS_WKWEBVIEW) {
             const tempAnchor = document.createElement('a');
             return Boolean(tempAnchor.relList && tempAnchor.relList.supports && tempAnchor.relList.supports('ar'));
         } else {
-            return  Boolean(/CriOS\/|EdgiOS\/|FxiOS\/|GSA\/|DuckDuckGo\//.test(navigator.userAgent));
+            return Boolean(/CriOS\/|EdgiOS\/|FxiOS\/|GSA\/|DuckDuckGo\//.test(navigator.userAgent));
         }
     } else {
         return false;
